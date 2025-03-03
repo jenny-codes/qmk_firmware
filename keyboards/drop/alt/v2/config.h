@@ -20,3 +20,8 @@
 
 #define RGB_MATRIX_CYCLE_ZONES_ENABLE
 #define RGB_MATRIX_CAPS_LOCK_INDEX 30
+
+// Mainly for the left ctrl that now also serves as kc_grv
+// And left/right shift that now also serves as paranthesis
+#define PERMISSIVE_HOLD
+#define TAPPING_TERM 120
