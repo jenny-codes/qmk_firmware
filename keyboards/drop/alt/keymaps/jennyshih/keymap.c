@@ -8,6 +8,7 @@ enum custom_keycodes {
   SBACK,
   SLINE,
   TOGAME, // Toggle game layer
+  NCOLOR, // Next underglow color
 };
 
 /*enum layers {*/
@@ -33,7 +34,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  QK_BOOT, KC_DEL,
         TOGAME,  KC_GRV,  SWORD,   SLINE,   SBACK,   KC_F15,  _______, _______, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______, KC_HOME,
         _______, KC_F16,  _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______,          _______, KC_PGUP,
-        _______, _______, RM_TOGG, _______, _______, RM_NEXT, NK_TOGG, _______, _______, _______, _______, _______,          KC_BRIU, KC_PGDN,
+        _______, _______, UG_TOGG, NCOLOR,  _______, RM_NEXT, NK_TOGG, _______, _______, _______, _______, _______,          KC_BRIU, KC_PGDN,
         _______, _______, _______,                            _______,                            KC_APP,  _______, KC_INS,  KC_BRID, KC_END
     ),
 
@@ -49,10 +50,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  QK_BOOT, KC_MUTE,
         TOGAME,  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_VOLU,
         _______, _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______,          _______, KC_VOLD,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          KC_F11,  KC_F10,
-        _______, _______, _______,                            _______,                            _______,  KC_RCTL, KC_INS, KC_F12,  KC_END
+        _______, _______, UG_TOGG, NCOLOR,  _______, _______, _______, _______, _______, _______, _______, _______,          KC_F11,  KC_F10,
+        _______, _______, _______,                            _______,                            _______, KC_RCTL, KC_INS,  KC_F12,  KC_END
     )
 };
+
+const hsv_t PROGMEM hsv_colors[] = {
+  {HSV_AZURE},
+  {HSV_BLACK},
+  {HSV_BLUE},
+  {HSV_CHARTREUSE},
+  {HSV_CORAL},
+  {HSV_CYAN},
+  {HSV_GOLD},
+  {HSV_GOLDENROD},
+  {HSV_GREEN},
+  {HSV_MAGENTA},
+  {HSV_ORANGE},
+  {HSV_PINK},
+  {HSV_PURPLE},
+  {HSV_RED},
+  {HSV_SPRINGGREEN},
+  {HSV_TEAL},
+  {HSV_TURQUOISE},
+  {HSV_WHITE},
+  {HSV_YELLOW},
+  {HSV_OFF},
+};
+
+#define NUM_HSV_COLORS (sizeof(hsv_colors) / sizeof(hsv_colors[0]))
+static uint8_t current_color_index = 0;
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
   if (!process_select_word(keycode, record)) { return false; }
@@ -99,7 +126,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
       }
       break;
 
-    }
+    case NCOLOR:
+      if (record->event.pressed) {
+        current_color_index = (current_color_index + 1) % NUM_HSV_COLORS;
+        hsv_t color = hsv_colors[current_color_index]; // Read the struct
+        rgb_matrix_sethsv_noeeprom(color.h, color.s, color.v);
+     }
+     return false;
+
+  }
 
   return true;
 }
