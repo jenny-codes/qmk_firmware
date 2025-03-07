@@ -25,3 +25,7 @@
 // And left/right shift that now also serves as paranthesis
 #define HOLD_ON_OTHER_KEY_PRESS
 #define TAPPING_TERM 129
+
+// For select_word to work with mac. Or else Windows/Linux
+// are assumed by default
+#define SELECT_WORD_OS_MAC
