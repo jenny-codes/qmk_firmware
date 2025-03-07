@@ -23,5 +23,5 @@
 
 // Mainly for the left ctrl that now also serves as kc_grv
 // And left/right shift that now also serves as paranthesis
-#define PERMISSIVE_HOLD
-#define TAPPING_TERM 120
+#define HOLD_ON_OTHER_KEY_PRESS
+#define TAPPING_TERM 129
