@@ -27,14 +27,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         LT(1, KC_TAB), KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_VOLU,
         CTL_T(KC_GRV), KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_VOLD,
         SC_LSPO,       KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, SC_RSPC,          KC_UP,   KC_MEDIA_PLAY_PAUSE,
-        MO(1),         KC_LALT, KC_LGUI,                            KC_SPC,                             KC_RCTL, MO(1),   KC_LEFT, KC_DOWN, KC_RGHT
+        MO(1),         KC_LALT, KC_LGUI,                            KC_SPC,                             KC_RCTL, KC_RALT,   KC_LEFT, KC_DOWN, KC_RGHT
     ),
 
     [1] = LAYOUT_65_ansi_blocker(
         KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  QK_BOOT, KC_DEL,
         TOGAME,  KC_GRV,  SWORD,   SLINE,   SBACK,   KC_F15,  _______, _______, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______, KC_HOME,
         _______, KC_F16,  _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______,          _______, KC_PGUP,
-        _______, _______, UG_TOGG, NCOLOR,  _______, RM_NEXT, NK_TOGG, _______, _______, _______, _______, _______,          KC_BRIU, KC_PGDN,
+        _______, RM_TOGG, UG_TOGG, NCOLOR,  RM_NEXT, _______, _______, _______, _______, _______, _______, _______,          KC_BRIU, KC_PGDN,
         _______, _______, _______,                            _______,                            KC_APP,  _______, KC_INS,  KC_BRID, KC_END
     ),
 
@@ -131,8 +131,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         current_color_index = (current_color_index + 1) % NUM_HSV_COLORS;
         hsv_t color = hsv_colors[current_color_index]; // Read the struct
         rgb_matrix_sethsv_noeeprom(color.h, color.s, color.v);
-     }
-     return false;
+      }
+      return false;
 
   }
 
