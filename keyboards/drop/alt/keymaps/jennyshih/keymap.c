@@ -117,12 +117,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
       if (IS_LAYER_ON(2)) {
         layer_off(2);
-        rgb_matrix_disable_noeeprom();
       } else {
         layer_on(2);
-        rgb_matrix_enable_noeeprom();
-        rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
-        rgb_matrix_sethsv_noeeprom(HSV_TURQUOISE);
       }
       break;
 
@@ -138,3 +134,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
   return true;
 }
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    // If game layer is on, set the underglow color to turquoise
+    if (get_highest_layer(state) >= 2) {
+        rgb_matrix_enable_noeeprom();
+        rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+        rgb_matrix_sethsv_noeeprom(HSV_TURQUOISE);
+    } else {
+        rgb_matrix_sethsv_noeeprom(HSV_OFF);
+    }
+    return state;
+}
+
