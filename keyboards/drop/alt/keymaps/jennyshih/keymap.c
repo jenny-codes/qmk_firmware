@@ -1,20 +1,148 @@
 // Copyright 2023 Massdrop, Inc.
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include QMK_KEYBOARD_H
+#include "features/select_word.h"
+
+enum custom_keycodes {
+  SWORD = SAFE_RANGE,
+  SBACK,
+  SLINE,
+  TOGAME, // Toggle game layer
+  NCOLOR, // Next underglow color
+};
+
+/*enum layers {*/
+/*  _DEFAULT = 0,*/
+/*  _RAISE   = 1,*/
+/*  _GAME    = 2,*/
+/*  _GRAISE  = 3,*/
+/*}*/
+
+#define RAISE MO(_RAISE)
+#define GRAISE MO(_GRAISE)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_65_ansi_blocker(
-        KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL,
-        KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_HOME,
-        KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGUP,
-        KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,          KC_UP,   KC_PGDN,
-        KC_LCTL, KC_LGUI, KC_LALT,                            KC_SPC,                             KC_RALT, MO(1),   KC_LEFT, KC_DOWN, KC_RGHT
+        KC_ESC,        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_MUTE,
+        LT(1, KC_TAB), KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_VOLU,
+        CTL_T(KC_GRV), KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_VOLD,
+        SC_LSPO,       KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, SC_RSPC,          KC_UP,   KC_MEDIA_PLAY_PAUSE,
+        MO(1),         KC_LALT, KC_LGUI,                            KC_SPC,                             KC_RCTL, KC_RALT,   KC_LEFT, KC_DOWN, KC_RGHT
     ),
+
     [1] = LAYOUT_65_ansi_blocker(
-        KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE,
-        _______, RM_TOGG, RM_VALU, RM_SPDU, RM_HUEU, RM_SATU, _______, _______, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______, KC_END, 
-        _______, RM_NEXT, RM_VALD, RM_SPDD, RM_HUED, RM_SATD, _______, _______, _______, _______, _______, _______,          _______, KC_VOLU,
-        _______, RGB_M_P, RGB_M_B, RGB_M_R, RGB_M_SW,QK_BOOT, NK_TOGG, _______, _______, _______, _______, _______,          KC_PGUP, KC_VOLD,
-        _______, _______, _______,                            EE_CLR,                             KC_APP,  _______, KC_HOME, KC_PGDN, KC_END
+        KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  QK_BOOT, KC_DEL,
+        TOGAME,  KC_GRV,  SWORD,   SLINE,   SBACK,   KC_F15,  _______, _______, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______, KC_HOME,
+        _______, KC_F16,  _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______,          _______, KC_PGUP,
+        _______, RM_TOGG, UG_TOGG, NCOLOR,  RM_NEXT, _______, _______, _______, _______, _______, _______, _______,          KC_BRIU, KC_PGDN,
+        _______, _______, _______,                            _______,                            KC_APP,  _______, KC_INS,  KC_BRID, KC_END
+    ),
+
+    [2] = LAYOUT_65_ansi_blocker(
+        KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL,
+        KC_F8,   KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_HOME,
+        KC_LCTL, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGUP,
+        KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, SC_RSPC,          KC_UP,   KC_PGDN,
+        MO(3),   KC_LCTL, KC_LALT,                            KC_SPC,                             KC_F9,   KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
+    ),
+
+    [3] = LAYOUT_65_ansi_blocker(
+        KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  QK_BOOT, KC_MUTE,
+        TOGAME,  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_VOLU,
+        _______, _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______,          _______, KC_VOLD,
+        _______, _______, UG_TOGG, NCOLOR,  _______, _______, _______, _______, _______, _______, _______, _______,          KC_F11,  KC_F10,
+        _______, _______, _______,                            _______,                            _______, KC_RCTL, KC_INS,  KC_F12,  KC_END
     )
 };
+
+const hsv_t PROGMEM hsv_colors[] = {
+  {HSV_AZURE},
+  {HSV_BLACK},
+  {HSV_BLUE},
+  {HSV_CHARTREUSE},
+  {HSV_CORAL},
+  {HSV_CYAN},
+  {HSV_GOLD},
+  {HSV_GOLDENROD},
+  {HSV_GREEN},
+  {HSV_MAGENTA},
+  {HSV_ORANGE},
+  {HSV_PINK},
+  {HSV_PURPLE},
+  {HSV_RED},
+  {HSV_SPRINGGREEN},
+  {HSV_TEAL},
+  {HSV_TURQUOISE},
+  {HSV_WHITE},
+  {HSV_YELLOW},
+  {HSV_OFF},
+};
+
+#define NUM_HSV_COLORS (sizeof(hsv_colors) / sizeof(hsv_colors[0]))
+static uint8_t current_color_index = 0;
+
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+  if (!process_select_word(keycode, record)) { return false; }
+
+  switch (keycode) {
+    case SBACK:  // Backward word selection.
+      if (record->event.pressed) {
+        select_word_register('B');
+      } else {
+        select_word_unregister();
+      }
+      break;
+
+    case SWORD:  // Forward word selection.
+      if (record->event.pressed) {
+        select_word_register('W');
+      } else {
+        select_word_unregister();
+      }
+      break;
+
+    case SLINE:  // Line selection.
+      if(record->event.pressed) {
+        select_word_register('L');
+      } else {
+        select_word_unregister();
+      }
+      break;
+
+
+    case TOGAME:
+      if (!record->event.pressed) {
+        return false;
+      }
+
+      if (IS_LAYER_ON(2)) {
+        layer_off(2);
+      } else {
+        layer_on(2);
+      }
+      break;
+
+    case NCOLOR:
+      if (record->event.pressed) {
+        current_color_index = (current_color_index + 1) % NUM_HSV_COLORS;
+        hsv_t color = hsv_colors[current_color_index]; // Read the struct
+        rgb_matrix_sethsv_noeeprom(color.h, color.s, color.v);
+      }
+      return false;
+
+  }
+
+  return true;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    // If game layer is on, set the underglow color to turquoise
+    if (get_highest_layer(state) >= 2) {
+        rgb_matrix_enable_noeeprom();
+        rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+        rgb_matrix_sethsv_noeeprom(HSV_TURQUOISE);
+    } else {
+        rgb_matrix_sethsv_noeeprom(HSV_OFF);
+    }
+    return state;
+}
